@@ -6,7 +6,7 @@ typedef struct BFInfo_t {
   int m;
   char* salt;
   char* hash;
-  const char* range;
+  char* range;
   int rangeLength;
 } BFInfo;
 
@@ -17,6 +17,7 @@ typedef struct RangeID_t {
 
 void* bruteforce(void* arg);
 
-char* nextPass(char* lastPass, BFInfo info);
+RangeID* nextPass(RangeID* lastPass, BFInfo* info);
+char* rangeToChar(RangeID* id, char* range);
 
 #endif /* end of include guard: _BRUTEFORCE_H_ */

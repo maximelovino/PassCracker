@@ -6,13 +6,13 @@ OBJECTS= crack.o bruteforce.o
 all: crack
 
 crack: crack.o bruteforce.o
-	gcc $(OBJECTS) -o crack
+	$(CC) $(OBJECTS) -o crack $(ENDFLAGS)
 
 crack.o: crack.c
-	$(CC) $(FLAGS) crack.c $(ENDFLAGS)
-
+	$(CC) $(FLAGS) crack.c
+	
 bruteforce.o: bruteforce.c bruteforce.h
-	$(CC) $(FLAGS) bruteforce.c $(ENDFLAGS)
+	$(CC) $(FLAGS) bruteforce.c
 
 clean:
 	rm *.o crack

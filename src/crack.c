@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "bruteforce.h"
 #include <pthread.h>
 #include <string.h>
 #include <time.h>
+#include "bruteforce.h"
 
 #ifndef STR_SIZE
 #define STR_SIZE 128
@@ -22,7 +22,7 @@ char* createCharRange(char* pathOfRangeFile, int* rangeLength){
 	}
 	rewind(file);
 	*rangeLength = lineCnt;
-	char range[lineCnt];
+	char* range = malloc(sizeof(char)*lineCnt);
 	lineCnt = 0;
 	while (fgets(line,STR_SIZE,file) != NULL) {
 		range[lineCnt] = line[0];
@@ -38,8 +38,7 @@ int main(int argc, char const *argv[]) {
 		printf("Your arguments are invalid\n");
 	}else{
 		struct timespec start,finish;
-        //TODO check if linux compatible
-		clock_gettime(_CLOCK_MONOTONIC,&start);
+		clock_gettime(CLOCK_MONOTONIC,&start);
 		char hash[strlen(argv[1])];
 		strcpy(hash,argv[1]);
 		char salt[strlen(argv[2])];
@@ -47,11 +46,11 @@ int main(int argc, char const *argv[]) {
 		int threadCount = atoi(argv[3]);
 		int* rangeLength = malloc(sizeof(int));
 
-		const char* range = createCharRange("range.txt",rangeLength);
+		char* range = createCharRange("range.txt",rangeLength);
 
 		pthread_t threads[threadCount];
 
-		for (size_t i = 0; i < threadCount; i++) {
+		for (int i = 0; i < threadCount; i++) {
 			BFInfo* info = malloc(sizeof(BFInfo));
 			info -> id = i;
 			info -> m = threadCount;
@@ -65,9 +64,12 @@ int main(int argc, char const *argv[]) {
 				return EXIT_FAILURE;
 			}
 		}
+		for (int i = 0; i < threadCount; i++)
+		{
+			pthread_join(threads[i], NULL);
+		}
 
-    //TODO check if linux compatible
-	clock_gettime(_CLOCK_MONOTONIC,&finish);
+	clock_gettime(CLOCK_MONOTONIC,&finish);
 	double elapsedTime = finish.tv_sec - start.tv_sec;
 	elapsedTime += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
 	printf("The code has run during %f seconds\n", elapsedTime );

@@ -2,38 +2,51 @@
 #include <crypt.h>
 #include "bruteforce.h"
 #include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 
 void* bruteforce(void* arg) {
+printf("LOURD\n");
     BFInfo* info = (BFInfo*) arg;
     int found = 0;
-    int* pass = nextPass(NULL, arg);
+    RangeID* pass = nextPass(NULL, info);
+printf(" HAHAHAHA %d\n", pass->ids[0]);
     char* strPass;
     struct crypt_data* data = malloc(sizeof(struct crypt_data));
     data->initialized = 0;
 
+printf("ENTERING LOOP\n");
     while (!found) {
-        strPass = rangeToChar(pass, )
-        char* hash = crypt_r(pass, arg->salt, data);
-        if(strcmp(hash, arg->hash) == 0) {
+    
+        strPass = rangeToChar(pass, info->range);
+        
+printf("%s\n", strPass);
+        
+        char* hash = crypt_r(strPass, info->salt, data);
+        if(strcmp(hash, info->hash) == 0) {
             found = 1;
         } else {
-            pass = nextPass(pass, arg);
+        
+            pass = nextPass(pass, info);
 
         }
     }
 
+printf("FOUND SHIT\n");
+printf("%s\n", strPass);
     free(data);
-    return pass;
+    return strPass;
 }
 
 RangeID* nextPass(RangeID* lastPass, BFInfo* info) {
     if(lastPass != NULL) {
+    
         int newChar = 0;
         int lastID = lastPass->ids[lastPass->len-1];
         lastID += info->m;
 
         if(lastID > info->rangeLength) {
-            lastID -= info->rangeLength;
+            lastID -= info->rangeLength + 1;
             for (int i = lastPass->len-2; i >= 0; i--) {
                 lastPass->ids[i]++;
                 if(lastPass->ids[i] < info->rangeLength)
@@ -46,10 +59,12 @@ RangeID* nextPass(RangeID* lastPass, BFInfo* info) {
             }
         }
         lastPass->ids[lastPass->len-1] = lastID;
+        
+      
 
         RangeID* next = malloc(sizeof(RangeID));
-        if(next != NULL) return NULL;
-        next->ids = malloc(sizof(int)*(lastPass->len+newChar));
+        if(next == NULL) return NULL;
+        next->ids = malloc(sizeof(int) * (lastPass->len + newChar));
         next->len = lastPass->len+newChar;
 
         for (int i = 0; i < lastPass->len; i++) {
@@ -61,12 +76,13 @@ RangeID* nextPass(RangeID* lastPass, BFInfo* info) {
 
         free(lastPass->ids);
         free(lastPass);
+        return next;
     } else {
         //TODO if id > 64 n-letter
         RangeID* next = malloc(sizeof(RangeID));
         next->ids = malloc(sizeof(int));
         next->len = 1;
-        next->ids[0] = info->m;
+        next->ids[0] = info->id;
         return next;
     }
 }

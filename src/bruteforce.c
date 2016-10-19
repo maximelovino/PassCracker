@@ -38,40 +38,41 @@ printf("%s\n", strPass);
     return strPass;
 }
 
+RangeID* genRangeID(int len) {
+    RangeID* r = malloc(sizeof(RangeID));
+    if(r == NULL) return NULL;
+    r->ids = malloc(sizeof(int) * len);
+    r->len = len;
+    return r;
+}
+
 RangeID* nextPass(RangeID* lastPass, BFInfo* info) {
+    RangeID* next = NULL;
+
     if(lastPass != NULL) {
-    
         int newChar = 0;
-        int lastID = lastPass->ids[lastPass->len-1];
-        lastID += info->m;
+        lastPass->ids[lastPass->len-1] += info->m;
 
-        if(lastID > info->rangeLength) {
-            lastID -= info->rangeLength + 1;
-            for (int i = lastPass->len-2; i >= 0; i--) {
+        if(lastPass->ids[lastPass->len-1] >= info->rangeLength) {
+
+            for (int i = lastPass->len-1; i >= 0; i--) {
                 lastPass->ids[i]++;
-                if(lastPass->ids[i] < info->rangeLength)
+                if(lastPass->ids[i] < info->rangeLength) {
                     break;
-                else
+                } else {
                     lastPass->ids[i] = 0;
+                    if(i == 0) {
+                        newChar = 1;
+                    }
+                }
             }
-            if(lastPass->ids[0] >= info->rangeLength) {
-                newChar = 1;
-            }
+            lastPass->ids[lastPass->len-1] %= info->rangeLength;
         }
-        lastPass->ids[lastPass->len-1] = lastID;
-        
-      
 
-        RangeID* next = malloc(sizeof(RangeID));
-        if(next == NULL) return NULL;
-        next->ids = malloc(sizeof(int) * (lastPass->len + newChar));
-        next->len = lastPass->len+newChar;
+        next = genRangeID(lastPass->len+newChar);
 
         for (int i = 0; i < lastPass->len; i++) {
             next->ids[i+newChar] = lastPass->ids[i];
-        }
-        if(newChar) {
-            next->ids[0] = 0;
         }
 
         free(lastPass->ids);
@@ -79,9 +80,7 @@ RangeID* nextPass(RangeID* lastPass, BFInfo* info) {
         return next;
     } else {
         //TODO if id > 64 n-letter
-        RangeID* next = malloc(sizeof(RangeID));
-        next->ids = malloc(sizeof(int));
-        next->len = 1;
+        next = genRangeID(1);
         next->ids[0] = info->id;
         return next;
     }

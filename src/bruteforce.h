@@ -6,8 +6,14 @@ typedef struct BFInfo_t {
   int m;
   char* salt;
   char* hash;
-  char* range;
+  const char* range;
+  const int rangeLength;
 } BFInfo;
+
+typedef struct RangeID_t {
+    int* ids;
+    int len;
+}; RangeID;
 
 void* bruteforce(void* arg);
 

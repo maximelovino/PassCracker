@@ -1,5 +1,6 @@
-#include "bruteforce.h"
+#define _GNU_SOURCE
 #include <crypt.h>
+#include "bruteforce.h"
 #include <stdlib.h>
 
 void* bruteforce(void* arg) {

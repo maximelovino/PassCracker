@@ -14,7 +14,7 @@ char* createCharRange(char* pathOfRangeFile, int* rangeLength){
 	file = fopen(pathOfRangeFile,"r");
 	char line[STR_SIZE];
 	if (file == NULL) {
-		return EXIT_FAILURE;
+		return NULL;
 	}
 	int lineCnt = 0;
 	while (fgets(line,STR_SIZE,file) != NULL) {
@@ -38,7 +38,8 @@ int main(int argc, char const *argv[]) {
 		printf("Your arguments are invalid\n");
 	}else{
 		struct timespec start,finish;
-		clock_gettime(CLOCK_MONOTIC,&start);
+        //TODO check if linux compatible
+		clock_gettime(_CLOCK_MONOTONIC,&start);
 		char hash[strlen(argv[1])];
 		strcpy(hash,argv[1]);
 		char salt[strlen(argv[2])];
@@ -65,8 +66,8 @@ int main(int argc, char const *argv[]) {
 			}
 		}
 
-
-	clock_gettime(CLOCK_MONOTIC,&finish);
+    //TODO check if linux compatible
+	clock_gettime(_CLOCK_MONOTONIC,&finish);
 	double elapsedTime = finish.tv_sec - start.tv_sec;
 	elapsedTime += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
 	printf("The code has run during %f seconds\n", elapsedTime );

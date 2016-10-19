@@ -8,6 +8,7 @@ typedef struct BFInfo_t {
   char* hash;
   char* range;
   int rangeLength;
+  int* winner;
 } BFInfo;
 
 typedef struct RangeID_t {

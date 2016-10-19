@@ -44,6 +44,8 @@ int main(int argc, char const *argv[]) {
 		char salt[strlen(argv[2])];
 		strcpy(salt,argv[2]);
 		int threadCount = atoi(argv[3]);
+		int* winner = malloc(sizeof(int));
+		*winner = -1;
 		int* rangeLength = malloc(sizeof(int));
 
 		char* range = createCharRange("range.txt",rangeLength);
@@ -58,21 +60,29 @@ int main(int argc, char const *argv[]) {
 			info -> salt = salt;
 			info -> hash = hash;
 			info -> range = range;
+			info -> winner = winner;
 
 			if (pthread_create(&(threads[i]),NULL,bruteforce,info)!=0) {
 				fprintf(stderr, "There was a problem creating a thread\n");
 				return EXIT_FAILURE;
 			}
 		}
-		for (int i = 0; i < threadCount; i++)
-		{
-			pthread_join(threads[i], NULL);
+		
+		while (*winner == -1) {};
+
+		char* result;
+
+		pthread_join(threads[*winner],(void**)&result);
+
+		for (int i = 0; i < threadCount; i++){
+			pthread_cancel(threads[i]);
 		}
 
-	clock_gettime(CLOCK_MONOTONIC,&finish);
-	double elapsedTime = finish.tv_sec - start.tv_sec;
-	elapsedTime += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
-	printf("The code has run during %f seconds\n", elapsedTime );
+		clock_gettime(CLOCK_MONOTONIC,&finish);
+		double elapsedTime = finish.tv_sec - start.tv_sec;
+		elapsedTime += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+		printf("The password is %s\n",result);
+		printf("The code has run during %f seconds\n", elapsedTime );
 	}
 	return 0;
 }

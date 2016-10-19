@@ -17,16 +17,17 @@ printf(" HAHAHAHA %d\n", pass->ids[0]);
 
 printf("ENTERING LOOP\n");
     while (!found) {
-    
+
         strPass = rangeToChar(pass, info->range);
-        
+
 printf("%s\n", strPass);
-        
+
         char* hash = crypt_r(strPass, info->salt, data);
         if(strcmp(hash, info->hash) == 0) {
             found = 1;
+            *(info -> winner) = info -> id;
         } else {
-        
+
             pass = nextPass(pass, info);
 
         }

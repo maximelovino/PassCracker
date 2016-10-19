@@ -55,19 +55,22 @@ RangeID* nextPass(RangeID* lastPass, BFInfo* info) {
         lastPass->ids[lastPass->len-1] += info->m;
 
         if(lastPass->ids[lastPass->len-1] >= info->rangeLength) {
-
-            for (int i = lastPass->len-1; i >= 0; i--) {
-                lastPass->ids[i]++;
-                if(lastPass->ids[i] < info->rangeLength) {
-                    break;
-                } else {
-                    lastPass->ids[i] = 0;
-                    if(i == 0) {
-                        newChar = 1;
-                    }
-                }
-            }
-            lastPass->ids[lastPass->len-1] %= info->rangeLength;
+			lastPass->ids[lastPass->len-1] %= info->rangeLength;
+			if(lastPass->len == 1) {
+				newChar = 1;	
+			} else {
+		        for (int i = lastPass->len-2; i >= 0; i--) {
+		            lastPass->ids[i]++;
+		            if(lastPass->ids[i] < info->rangeLength) {
+		                break;
+		            } else {
+		                lastPass->ids[i] = 0;
+		                if(i == 0) {
+		                    newChar = 1;
+		                }
+		            }
+		        }
+			}
         }
 
         next = genRangeID(lastPass->len+newChar);

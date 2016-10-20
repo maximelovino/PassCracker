@@ -13,21 +13,18 @@ char* createCharRange(char* pathOfRangeFile, int* rangeLength){
 	FILE* file;
 	file = fopen(pathOfRangeFile,"r");
 	char line[STR_SIZE];
-	if (file == NULL) {
-		return NULL;
+	char* range;
+	if (fgets(line,STR_SIZE,file) != NULL) {
+		//This is to ignore the \n at the end of the line that I don't know how to remove
+		//TODO find a cleaner fix
+		*rangeLength = strlen(line)-1;
+		range = malloc(sizeof(char)*(*rangeLength));
+		for (int i = 0; i < *rangeLength; i++) {
+			range[i] = line[i];
+		}
 	}
-	int lineCnt = 0;
-	while (fgets(line,STR_SIZE,file) != NULL) {
-		lineCnt++;
-	}
-	rewind(file);
-	*rangeLength = lineCnt;
-	char* range = malloc(sizeof(char)*lineCnt);
-	lineCnt = 0;
-	while (fgets(line,STR_SIZE,file) != NULL) {
-		range[lineCnt] = line[0];
-		lineCnt++;
-	}
+
+	fclose(file);
 	return range;
 }
 
@@ -67,7 +64,7 @@ int main(int argc, char const *argv[]) {
 				return EXIT_FAILURE;
 			}
 		}
-		
+
 		while (*winner == -1) {};
 
 		char* result;

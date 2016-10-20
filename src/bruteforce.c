@@ -26,7 +26,7 @@ void* bruteforce(void* arg) {
             found = 1;
             *(info -> winner) = info -> id;
         } else {
-
+			free(strPass);
             pass = nextPass(pass, info);
 
         }

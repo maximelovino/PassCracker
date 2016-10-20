@@ -5,6 +5,6 @@
 
 
 int main(int argc, char const *argv[]) {
-  printf("%s\n", crypt("abcd","43"));
+  printf("%s\n", crypt("abcde","43"));
   return 0;
 }

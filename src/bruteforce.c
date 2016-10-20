@@ -4,23 +4,22 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <pthread.h>
 
 void* bruteforce(void* arg) {
-printf("LOURD\n");
+    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS,NULL);
     BFInfo* info = (BFInfo*) arg;
     int found = 0;
     RangeID* pass = nextPass(NULL, info);
-printf(" HAHAHAHA %d\n", pass->ids[0]);
     char* strPass;
     struct crypt_data* data = malloc(sizeof(struct crypt_data));
     data->initialized = 0;
 
-printf("ENTERING LOOP\n");
     while (!found) {
 
         strPass = rangeToChar(pass, info->range);
 
-printf("%s\n", strPass);
+//printf("%s\n", strPass);
 
         char* hash = crypt_r(strPass, info->salt, data);
         if(strcmp(hash, info->hash) == 0) {
@@ -33,8 +32,6 @@ printf("%s\n", strPass);
         }
     }
 
-printf("FOUND SHIT\n");
-printf("%s\n", strPass);
     free(data);
     return strPass;
 }
@@ -57,7 +54,7 @@ RangeID* nextPass(RangeID* lastPass, BFInfo* info) {
         if(lastPass->ids[lastPass->len-1] >= info->rangeLength) {
 			lastPass->ids[lastPass->len-1] %= info->rangeLength;
 			if(lastPass->len == 1) {
-				newChar = 1;	
+				newChar = 1;
 			} else {
 		        for (int i = lastPass->len-2; i >= 0; i--) {
 		            lastPass->ids[i]++;

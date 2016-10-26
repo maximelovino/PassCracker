@@ -1,10 +1,13 @@
 #define _GNU_SOURCE
 #include <crypt.h>
-#include "bruteforce.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <pthread.h>
+#include <math.h>
+
+#include "bruteforce.h"
+
 
 void* bruteforce(void* arg) {
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS,NULL);
@@ -26,9 +29,8 @@ void* bruteforce(void* arg) {
             found = 1;
             *(info -> winner) = info -> id;
         } else {
-			free(strPass);
+            free(strPass);
             pass = nextPass(pass, info);
-
         }
     }
 
@@ -48,43 +50,56 @@ RangeID* nextPass(RangeID* lastPass, BFInfo* info) {
     RangeID* next = NULL;
 
     if(lastPass != NULL) {
-        int newChar = 0;
-        lastPass->ids[lastPass->len-1] += info->m;
+        double carry = (double) incrementPass(lastPass, info);
 
-        if(lastPass->ids[lastPass->len-1] >= info->rangeLength) {
-			lastPass->ids[lastPass->len-1] %= info->rangeLength;
-			if(lastPass->len == 1) {
-				newChar = 1;
-			} else {
-		        for (int i = lastPass->len-2; i >= 0; i--) {
-		            lastPass->ids[i]++;
-		            if(lastPass->ids[i] < info->rangeLength) {
-		                break;
-		            } else {
-		                lastPass->ids[i] = 0;
-		                if(i == 0) {
-		                    newChar = 1;
-		                }
-		            }
-		        }
-			}
+        int nChar = ceil(log(carry+1)/log(info->rangeLength));
+
+        next = genRangeID(lastPass->len+nChar);
+
+        for (int i = nChar; i < lastPass->len+nChar; i++) {
+            next->ids[i] = lastPass->ids[i-nChar];
         }
 
-        next = genRangeID(lastPass->len+newChar);
-
-        for (int i = 0; i < lastPass->len; i++) {
-            next->ids[i+newChar] = lastPass->ids[i];
+        for(int i = nChar-1; i >= 0; i--) {
+            next->ids[i] = ((int)carry-1) % info->rangeLength;
+            carry -= info->rangeLength;
         }
 
         free(lastPass->ids);
         free(lastPass);
         return next;
     } else {
-        //TODO if id > 64 n-letter
-        next = genRangeID(1);
-        next->ids[0] = info->id;
+        int size = (int)floor(log(info->id+1)/log(info->rangeLength)) + 1;
+        int carry = 0;
+        next = genRangeID(size);
+        next->ids[next->len-1] = info->id;
+        for (int i = next->len-1; i >= 0; i--) {
+            next->ids[i] += carry;
+            carry = 0;
+            while(next->ids[i] >= info->rangeLength) {
+                carry++;
+                next->ids[i] -= info->rangeLength;
+            }
+        }
+        printf("Thread %i initialized with %s\n", info->id, rangeToChar(next, info->range));
         return next;
     }
+}
+
+int incrementPass(RangeID* lastPass, BFInfo* info) {
+    int carry = 0;
+    lastPass->ids[lastPass->len-1] += info->m;
+
+    for (int i = lastPass->len-1; i >= 0; i--) {
+        lastPass->ids[i] += carry;
+        carry = 0;
+        while(lastPass->ids[i] >= info->rangeLength) {
+            carry++;
+            lastPass->ids[i] -= info->rangeLength;
+        }
+        if(carry == 0) break;
+    }
+    return carry;
 }
 
 char* rangeToChar(RangeID* id, char* range) {

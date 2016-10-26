@@ -21,5 +21,6 @@ void* bruteforce(void* arg);
 RangeID* nextPass(RangeID* lastPass, BFInfo* info);
 char* rangeToChar(RangeID* id, char* range);
 RangeID* genRangeID(int len);
+int incrementPass(RangeID* lastPass, BFInfo* info);
 
 #endif /* end of include guard: _BRUTEFORCE_H_ */

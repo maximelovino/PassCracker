@@ -1,4 +1,5 @@
 #define _GNU_SOURCE
+#define MAX(a,b) ((a) > (b) ? (a) : (b))
 #include <crypt.h>
 #include <stdlib.h>
 #include <string.h>
@@ -29,8 +30,9 @@ void* bruteforce(void* arg) {
 
         char* hash = crypt_r(strPass, info->salt, data);
         if(strcmp(hash, info->hash) == 0) {
+            printf("%s\n", "--------------- FOUND ----------------");
             found = 1;
-            *(info -> winner) = info -> id;
+            *(info -> winner) = info->id;
         } else {
             free(strPass);
             pass = nextPass(pass, info);
@@ -88,7 +90,7 @@ RangeID* nextPass(RangeID* lastPass, BFInfo* info) {
         next = genRangeID(size);
         next->ids[next->len-1] = info->id;
         for (int i = next->len-1; i >= 0; i--) {
-            next->ids[i] += carry;
+            next->ids[i] += MAX(carry - 1, 0);
             carry = 0;
             while(next->ids[i] >= info->rangeLength) {
                 carry++;

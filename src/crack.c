@@ -51,14 +51,13 @@ int main(int argc, char const *argv[]) {
 
 		for (int i = 0; i < threadCount; i++) {
 			BFInfo* info = malloc(sizeof(BFInfo));
-			info -> id = i;
-			info -> m = threadCount;
-			info -> rangeLength = *rangeLength;
-			info -> salt = salt;
-			info -> hash = hash;
-			info -> range = range;
-			info -> winner = winner;
-
+			info->id = i;
+			info->m = threadCount;
+			info->rangeLength = *rangeLength;
+			info->salt = salt;
+			info->hash = hash;
+			info->range = range;
+			info->winner = winner;
 			if (pthread_create(&(threads[i]),NULL,bruteforce,info)!=0) {
 				fprintf(stderr, "There was a problem creating a thread\n");
 				return EXIT_FAILURE;
@@ -68,7 +67,6 @@ int main(int argc, char const *argv[]) {
 		while (*winner == -1) {};
 
 		char* result;
-
 		pthread_join(threads[*winner],(void**)&result);
 
 		for (int i = 0; i < threadCount; i++){

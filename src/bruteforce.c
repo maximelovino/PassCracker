@@ -8,7 +8,10 @@
 
 #include "bruteforce.h"
 
-
+/**
+ * Main bruteforce search method
+ * @param arg BFInfo pointer
+ */
 void* bruteforce(void* arg) {
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS,NULL);
     BFInfo* info = (BFInfo*) arg;
@@ -38,6 +41,11 @@ void* bruteforce(void* arg) {
     return strPass;
 }
 
+/**
+ * Generates a new RangeID pointer
+ * @param  len the length of the range string
+ * @return     pointer to the new RangeID
+ */
 RangeID* genRangeID(int len) {
     RangeID* r = malloc(sizeof(RangeID));
     if(r == NULL) return NULL;
@@ -46,6 +54,12 @@ RangeID* genRangeID(int len) {
     return r;
 }
 
+/**
+ * Gives the next password for a thread to try
+ * @param  lastPass the last password tried or NULL
+ * @param  info     thread info
+ * @return          new RangeID to try
+ */
 RangeID* nextPass(RangeID* lastPass, BFInfo* info) {
     RangeID* next = NULL;
 
@@ -86,6 +100,12 @@ RangeID* nextPass(RangeID* lastPass, BFInfo* info) {
     }
 }
 
+/**
+ * Increments the last password and propagates the carry if needed
+ * @param  lastPass the password to incrementPass
+ * @param  info     thread info
+ * @return          if the password is too short, the carry to propagate on new characters, 0 otherwise
+ */
 int incrementPass(RangeID* lastPass, BFInfo* info) {
     int carry = 0;
     lastPass->ids[lastPass->len-1] += info->m;
@@ -102,6 +122,12 @@ int incrementPass(RangeID* lastPass, BFInfo* info) {
     return carry;
 }
 
+/**
+ * Converts a RangeID to a string
+ * @param  id    the rangeID to convert
+ * @param  range range on which the id applies
+ * @return       string version of id
+ */
 char* rangeToChar(RangeID* id, char* range) {
     char* str = malloc(sizeof(char)*(id->len+1));
     for (int i = 0; i < id->len; i++) {

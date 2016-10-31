@@ -51,6 +51,9 @@ int main(int argc, char const *argv[]) {
 
 		for (int i = 0; i < threadCount; i++) {
 			BFInfo* info = malloc(sizeof(BFInfo));
+			if(info == NULL) {
+				return EXIT_FAILURE;
+			}
 			info->id = i;
 			info->m = threadCount;
 			info->rangeLength = *rangeLength;
@@ -63,6 +66,7 @@ int main(int argc, char const *argv[]) {
 				return EXIT_FAILURE;
 			}
 		}
+		printf("%s\n", "Initialized !");
 
 		while (*winner == -1) {};
 

@@ -53,6 +53,9 @@ RangeID* genRangeID(int len) {
     if(r == NULL) return NULL;
     r->ids = malloc(sizeof(int) * len);
     r->len = len;
+    for (int i = 0; i < len; i++) {
+      r->ids[i] = 0;
+    }
     return r;
 }
 

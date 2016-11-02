@@ -27,13 +27,14 @@ void* bruteforce(void* arg) {
         char* hash = crypt_r(strPass, info->salt, data);
         if(strcmp(hash, info->hash) == 0) {
             *(info->winner) = info->id;
-            printf("%s\n","FOUND" );
         } else {
             free(strPass);
             pass = nextPass(pass, info);
         }
     }
-
+    free(info);
+    free(pass->ids);
+    free(pass);
     free(data);
     return strPass;
 }

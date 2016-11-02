@@ -16,8 +16,6 @@ char* createCharRange(char* pathOfRangeFile, int* rangeLength){
 	char line[STR_SIZE];
 	char* range;
 	if (fgets(line,STR_SIZE,file) != NULL) {
-		//This is to ignore the \n at the end of the line that I don't know how to remove
-		//TODO find a cleaner fix
 		*rangeLength = strlen(line)-1;
 		range = malloc(sizeof(char)*(*rangeLength));
 		for (int i = 0; i < *rangeLength; i++) {
@@ -54,11 +52,10 @@ int main(int argc, char const *argv[]) {
 		}
 
 		int threadCount = atoi(argv[3]);
-		int* winner = malloc(sizeof(int));
-		*winner = -1;
-		int* rangeLength = malloc(sizeof(int));
+		int winner = -1;
+		int rangeLength = 0;
 
-		char* range = createCharRange("range.txt",rangeLength);
+		char* range = createCharRange("range.txt", &rangeLength);
 
 		pthread_t threads[threadCount];
 
@@ -69,21 +66,21 @@ int main(int argc, char const *argv[]) {
 			}
 			info->id = i;
 			info->m = threadCount;
-			info->rangeLength = *rangeLength;
+			info->rangeLength = rangeLength;
 			info->salt = salt;
 			info->hash = hash;
 			info->range = range;
-			info->winner = winner;
+			info->winner = &winner;
 			if (pthread_create(&(threads[i]),NULL,bruteforce,info)!=0) {
 				fprintf(stderr, "There was a problem creating a thread\n");
 				return EXIT_FAILURE;
 			}
 		}
-		//printf("%s\n", "Initialized !");
+
 		char* result;
 		int resultAcquired = 0;
 		for (int i = 0; i < threadCount; i++){
-			if(i == *winner || !resultAcquired) {
+			if(i == winner || !resultAcquired) {
 				pthread_join(threads[i],(void**)&result);
 				resultAcquired = 1;
 			} else {
@@ -94,12 +91,11 @@ int main(int argc, char const *argv[]) {
 		clock_gettime(CLOCK_MONOTONIC,&finish);
 		double elapsedTime = finish.tv_sec - start.tv_sec;
 		elapsedTime += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
-		// printf("The password is %s\n",result);
-		// printf("The code has run during %f seconds\n", elapsedTime );
-		if(result == NULL) {
-			printf("%s\n", "ISSOU");
-		}
+
 		printf("%d;%d;%f;%s\n", threadCount, (int)strlen(result),elapsedTime,result);
+
+		free(range);
+		free(result);
 	}
 	return 0;
 }

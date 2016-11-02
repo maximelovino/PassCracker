@@ -41,6 +41,18 @@ int main(int argc, char const *argv[]) {
 		strcpy(hash,argv[1]);
 		char salt[strlen(argv[2])];
 		strcpy(salt,argv[2]);
+		int match = 1;
+		for (size_t i = 0; i < strlen(salt); i++) {
+			if (hash[i]!=salt[i]) {
+				match = 0;
+			}
+		}
+
+		if (!match) {
+			printf("The salt is not valid for this hash\n");
+			return 0;
+		}
+
 		int threadCount = atoi(argv[3]);
 		int* winner = malloc(sizeof(int));
 		*winner = -1;

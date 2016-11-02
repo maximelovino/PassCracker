@@ -14,7 +14,6 @@
  * @param arg BFInfo pointer
  */
 void* bruteforce(void* arg) {
-    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS,NULL);
     BFInfo* info = (BFInfo*) arg;
     RangeID* pass = nextPass(NULL, info);
     char* strPass;
@@ -25,12 +24,10 @@ void* bruteforce(void* arg) {
 
         strPass = rangeToChar(pass, info->range);
 
-//printf("%s\n", strPass);
-
         char* hash = crypt_r(strPass, info->salt, data);
         if(strcmp(hash, info->hash) == 0) {
-            //printf("%s\n", "--------------- FOUND ----------------");
-            *(info -> winner) = info->id;
+            *(info->winner) = info->id;
+            printf("%s\n","FOUND" );
         } else {
             free(strPass);
             pass = nextPass(pass, info);

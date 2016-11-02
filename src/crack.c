@@ -81,10 +81,11 @@ int main(int argc, char const *argv[]) {
 		}
 		//printf("%s\n", "Initialized !");
 		char* result;
-
+		int resultAcquired = 0;
 		for (int i = 0; i < threadCount; i++){
-			if(i == *winner) {
+			if(i == *winner || !resultAcquired) {
 				pthread_join(threads[i],(void**)&result);
+				resultAcquired = 1;
 			} else {
 				pthread_join(threads[i], NULL);
 			}
@@ -95,6 +96,9 @@ int main(int argc, char const *argv[]) {
 		elapsedTime += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
 		// printf("The password is %s\n",result);
 		// printf("The code has run during %f seconds\n", elapsedTime );
+		if(result == NULL) {
+			printf("%s\n", "ISSOU");
+		}
 		printf("%d;%d;%f;%s\n", threadCount, (int)strlen(result),elapsedTime,result);
 	}
 	return 0;

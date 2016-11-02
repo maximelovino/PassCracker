@@ -80,8 +80,9 @@ int main(int argc, char const *argv[]) {
 		clock_gettime(CLOCK_MONOTONIC,&finish);
 		double elapsedTime = finish.tv_sec - start.tv_sec;
 		elapsedTime += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
-		printf("The password is %s\n",result);
-		printf("The code has run during %f seconds\n", elapsedTime );
+		// printf("The password is %s\n",result);
+		// printf("The code has run during %f seconds\n", elapsedTime );
+		printf("%d;%d;%f;%s\n", threadCount, strlen(result),elapsedTime,result);
 	}
 	return 0;
 }

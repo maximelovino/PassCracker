@@ -66,7 +66,7 @@ int main(int argc, char const *argv[]) {
 				return EXIT_FAILURE;
 			}
 		}
-		printf("%s\n", "Initialized !");
+		//printf("%s\n", "Initialized !");
 
 		while (*winner == -1) {};
 
@@ -82,7 +82,7 @@ int main(int argc, char const *argv[]) {
 		elapsedTime += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
 		// printf("The password is %s\n",result);
 		// printf("The code has run during %f seconds\n", elapsedTime );
-		printf("%d;%d;%f;%s\n", threadCount, strlen(result),elapsedTime,result);
+		printf("%d;%d;%f;%s\n", threadCount, (int)strlen(result),elapsedTime,result);
 	}
 	return 0;
 }

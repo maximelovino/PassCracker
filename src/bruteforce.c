@@ -30,7 +30,7 @@ void* bruteforce(void* arg) {
 
         char* hash = crypt_r(strPass, info->salt, data);
         if(strcmp(hash, info->hash) == 0) {
-            printf("%s\n", "--------------- FOUND ----------------");
+            //printf("%s\n", "--------------- FOUND ----------------");
             found = 1;
             *(info -> winner) = info->id;
         } else {
@@ -100,7 +100,7 @@ RangeID* nextPass(RangeID* lastPass, BFInfo* info) {
                 next->ids[i] -= info->rangeLength;
             }
         }
-        printf("Thread %i initialized with %s\n", info->id, rangeToChar(next, info->range));
+        //printf("Thread %i initialized with %s\n", info->id, rangeToChar(next, info->range));
         return next;
     }
 }

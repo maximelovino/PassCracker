@@ -1,24 +1,29 @@
 #!/usr/bin/env bash
 make
 
-file=out.txt
+file="out.txt"
 
-hashGenSource=../test.c
+hashGenSource="../test.c"
 
-gcc $hashGenSource -lcrypt
+# compile test.c beforehand
 
-hashGenProgram=../a.out
-crackProgram=./crack
+hashGenProgram="../a.out"
+crackProgram="./crack"
 
 SALT=43
 
-PASSWORDS=(q,lo,mon,gege,hello,manger)
+declare -a PASSWORDS=("q" "lo" "mon" "gege" "hello" "manger")
 
 for pass in ${PASSWORDS[@]}
 do
-	hash=$hashGenProgram $pass $SALT
+	hash="$($hashGenProgram $pass $SALT)"
+	echo $hash
 	for (( i = 1; i <= 1024; i*=2 )); do
-		$crackProgram $hash $SALT $i >> $file
+		echo $crackProgram
+	 	echo $hash
+	 	echo $SALT
+	 	echo $i
+ 		$crackProgram $hash $SALT $i >> $file
 	done
 done
 

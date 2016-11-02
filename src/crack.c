@@ -3,6 +3,7 @@
 #include <pthread.h>
 #include <string.h>
 #include <time.h>
+#include <sched.h>
 #include "bruteforce.h"
 
 #ifndef STR_SIZE
@@ -67,14 +68,14 @@ int main(int argc, char const *argv[]) {
 			}
 		}
 		//printf("%s\n", "Initialized !");
-
-		while (*winner == -1) {};
-
 		char* result;
-		pthread_join(threads[*winner],(void**)&result);
 
 		for (int i = 0; i < threadCount; i++){
-			pthread_cancel(threads[i]);
+			if(i == *winner) {
+				pthread_join(threads[i],(void**)&result);
+			} else {
+				pthread_join(threads[i], NULL);
+			}
 		}
 
 		clock_gettime(CLOCK_MONOTONIC,&finish);

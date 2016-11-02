@@ -16,13 +16,12 @@
 void* bruteforce(void* arg) {
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS,NULL);
     BFInfo* info = (BFInfo*) arg;
-    int found = 0;
     RangeID* pass = nextPass(NULL, info);
     char* strPass;
     struct crypt_data* data = malloc(sizeof(struct crypt_data));
     data->initialized = 0;
 
-    while (!found) {
+    while (*(info->winner) == -1) {
 
         strPass = rangeToChar(pass, info->range);
 
@@ -31,7 +30,6 @@ void* bruteforce(void* arg) {
         char* hash = crypt_r(strPass, info->salt, data);
         if(strcmp(hash, info->hash) == 0) {
             //printf("%s\n", "--------------- FOUND ----------------");
-            found = 1;
             *(info -> winner) = info->id;
         } else {
             free(strPass);

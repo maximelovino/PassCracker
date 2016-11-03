@@ -1,3 +1,11 @@
+/**
+ * Bruteforce source file
+ * @file 	bruteforce.c
+ * @project	PassCracker
+ * @author	Maxime Lovino, Thomas Ibanez, Vincent Tournier
+ * @date	November 3, 2016
+ */
+
 #define _GNU_SOURCE
 #define MAX(a,b) ((a) > (b) ? (a) : (b))
 #include <crypt.h>
@@ -6,7 +14,6 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <math.h>
-
 #include "bruteforce.h"
 
 /**
@@ -96,7 +103,6 @@ RangeID* nextPass(RangeID* lastPass, BFInfo* info) {
                 next->ids[i] -= info->rangeLength;
             }
         }
-        //printf("Thread %i initialized with %s\n", info->id, rangeToChar(next, info->range));
         return next;
     }
 }

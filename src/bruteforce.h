@@ -1,3 +1,11 @@
+/**
+ * Bruteforce header file
+ * @file 	bruteforce.h
+ * @project	PassCracker
+ * @author	Maxime Lovino, Thomas Ibanez, Vincent Tournier
+ * @date	November 3, 2016
+ */
+
 #ifndef _BRUTEFORCE_H_
 #define _BRUTEFORCE_H_
 

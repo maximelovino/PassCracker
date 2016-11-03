@@ -1,3 +1,11 @@
+/**
+ * Crack source file (main file, entry point of program)
+ * @file 	crack.c
+ * @project	PassCracker
+ * @author	Maxime Lovino, Thomas Ibanez, Vincent Tournier
+ * @date	November 3, 2016
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
@@ -10,6 +18,12 @@
 #define STR_SIZE 128
 #endif
 
+/**
+ * Creates the range of characters our password can use
+ * @param  pathOfRangeFile	The path of the file containing the alphabet, on a single line
+ * @param  rangeLength		A pointer to an int where we will store the length of the alphabet
+ * @return					The alphabet
+ */
 char* createCharRange(char* pathOfRangeFile, int* rangeLength){
 	FILE* file;
 	file = fopen(pathOfRangeFile,"r");
@@ -91,9 +105,8 @@ int main(int argc, char const *argv[]) {
 		clock_gettime(CLOCK_MONOTONIC,&finish);
 		double elapsedTime = finish.tv_sec - start.tv_sec;
 		elapsedTime += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
-
-		printf("%d;%d;%f;%s\n", threadCount, (int)strlen(result),elapsedTime,result);
-
+		printf("The password is %s\n", result);
+		printf("It took %f seconds to find the result\n", elapsedTime);
 		free(range);
 		free(result);
 	}

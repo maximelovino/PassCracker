@@ -1,5 +1,5 @@
 CC= gcc
-FLAGS= -Wall -Wextra -std=gnu99 -c -g
+FLAGS= -Wall -Wextra -std=gnu99 -c
 ENDFLAGS= -lpthread -lcrypt -lrt -lm
 OBJECTS= crack.o bruteforce.o
 
